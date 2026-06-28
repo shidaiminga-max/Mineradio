@@ -20844,6 +20844,15 @@ function resetCustomBackgroundColor() {
 }
 function setCustomBackgroundOpacity(value, silent) {
   fx.backgroundOpacity = clampRange(Number(value), 0, 1);
+  // --- 新增：通知主进程修改窗口透明度 ---
+try {
+    const { ipcRenderer } = require('electron');
+    if (ipcRenderer) {
+        ipcRenderer.send('set-window-opacity', Number(value));
+    }
+} catch (e) {
+    console.log('Not in electron environment or IPC error');
+}
   fx.backgroundColorMode = 'custom';
   fx.backgroundColorCustom = true;
   updateCustomBackgroundControls();
