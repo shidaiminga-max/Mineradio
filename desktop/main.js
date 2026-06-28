@@ -1464,3 +1464,15 @@ if (!gotSingleInstanceLock) {
     if (localServer && localServer.close) localServer.close();
   });
 }
+
+// --- 新增功能：监听透明度调节 ---
+const { ipcMain } = require('electron');
+
+ipcMain.on('set-window-opacity', (event, opacityValue) => {
+    // 这里的 mainWindow 必须是上面定义过的窗口变量
+    // 如果运行报错，可能需要确认主窗口变量名是不是叫 mainWindow
+    if (typeof mainWindow !== 'undefined' && mainWindow) {
+        const safeOpacity = Math.min(Math.max(opacityValue, 0.1), 1);
+        mainWindow.setOpacity(safeOpacity);
+    }
+});
